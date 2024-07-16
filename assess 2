@@ -1,0 +1,41 @@
+# Define the inventory system structure
+class Warehouse:
+    def __init__(self, name):
+        self.name = name
+        self.products = {}
+
+class Product:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+        self.stock_level = 0
+
+# Create warehouses and products
+warehouse1 = Warehouse("Warehouse 1")
+warehouse2 = Warehouse("Warehouse 2")
+
+product1 = Product(1, "Product 1")
+product2 = Product(2, "Product 2")
+product3 = Product(3, "Product 3")
+
+# Initialize stock levels
+warehouse1.products[product1.id] = product1
+warehouse1.products[product1.id].stock_level = 50
+
+warehouse1.products[product2.id] = product2
+warehouse1.products[product2.id].stock_level = 100
+
+warehouse2.products[product3.id] = product3
+warehouse2.products[product3.id].stock_level = 75
+
+# Implement inventory tracking and alerting
+def check_stock_level(product_id, threshold):
+    for warehouse in [warehouse1, warehouse2]:
+        if product_id in warehouse.products:
+            stock_level = warehouse.products[product_id].stock_level
+            if stock_level < threshold:
+                print(f"Alert: Stock level for product {product_id} in {warehouse.name} is below the threshold!")
+
+# Example usage
+check_stock_level(1, 20)  # This will trigger an alert for product 1 in Warehouse 1
+check_stock_level(3, 50)  # This will not trigger an alert for product 3 in Warehouse 2
