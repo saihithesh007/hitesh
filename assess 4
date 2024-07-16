@@ -1,0 +1,104 @@
+1. Data Flow Diagram
+The data flow within the COVID-19 statistics tracking system:
+
+sql
+Copy code
++-------------------+        +--------------------+        +---------------------------+
+|       User        |        | Python Application |        | COVID-19 Statistics API   |
+| Inputs region     |        | (Client)           |        | (e.g., disease.sh)        |
++-------+-----------+        +--------+-----------+        +------------+--------------+
+        |                                |                                |
+        | (1) Input region               |                                |
+        |------------------------------->|                                |
+        |                                |                                |
+        |                                | (2) Fetch COVID-19 statistics  |
+        |                                |-------------------------------->|
+        |                                |                                |
+        |                                | (3) Receive COVID-19 statistics|
+        |                                |<--------------------------------|
+        |                                |                                |
+        |                                | (4) Display COVID-19 statistics|
+        |                                |    (cases, recoveries, deaths) |
+        |<-------------------------------|                                |
++-------+-----------+        +--------+-----------+        +------------+--------------+
+|       User        |        | Python Application |        | COVID-19 Statistics API   |
++-------------------+        +--------------------+        +---------------------------+
+2. Pseudocode and Implementation
+Pseudocode
+Initialize the Application
+
+Import necessary libraries.
+Set up the API base URL.
+User Input
+
+Prompt the user to input a region (country, state, or city).
+Fetch COVID-19 Statistics
+
+Construct the API request URL using the user input and API base URL.
+Send a request to the COVID-19 statistics API and retrieve the data.
+Process and Display Data
+
+Extract relevant COVID-19 statistics from the API response.
+Display the current number of cases, recoveries, and deaths for the specified region.
+Implementation
+Here’s the Python code implementing the above pseudocode:
+
+python
+Copy code
+import requests
+
+def get_covid_stats(region):
+    base_url = "https://disease.sh/v3/covid-19"
+    complete_url = f"{base_url}/all" if region.lower() == 'world' else f"{base_url}/countries/{region}"
+    
+    response = requests.get(complete_url)
+    
+    if response.status_code == 200:
+        covid_data = response.json()
+        return covid_data
+    else:
+        print("Error: Unable to fetch data. Please check the region and try again.")
+        return None
+
+def display_covid_stats(region, covid_data):
+    if covid_data:
+        print(f"COVID-19 Statistics for {region.capitalize()}:")
+        print(f"Total Cases: {covid_data.get('cases', 'N/A')}")
+        print(f"Total Recoveries: {covid_data.get('recovered', 'N/A')}")
+        print(f"Total Deaths: {covid_data.get('deaths', 'N/A')}")
+    else:
+        print("No data available to display.")
+
+def main():
+    region = input("Enter the region (country or 'world' for global statistics): ")
+    
+    covid_data = get_covid_stats(region)
+    display_covid_stats(region, covid_data)
+
+if _name_ == "_main_":
+    main()
+3. Documentation of the API Integration
+API Used: disease.sh COVID-19 API
+
+API Endpoint:
+
+Global statistics: https://disease.sh/v3/covid-19/all
+Country-specific statistics: https://disease.sh/v3/covid-19/countries/{country}
+Parameters:
+
+country: The country for which COVID-19 statistics are requested (e.g., USA, India).
+Response Format: JSON
+
+Contains COVID-19 statistics such as total cases, recoveries, and deaths.
+4. Explanation of Assumptions and Potential Improvements
+Assumptions:
+
+The user inputs a valid region (country name or 'world').
+The API key is not required for the disease.sh API.
+Potential Improvements:
+
+Error Handling: Improve error handling for network issues and invalid inputs.
+User Interface: Develop a graphical user interface (GUI) for better user experience.
+Enhanced Statistics: Include additional statistics such as new cases, active cases, and vaccination data.
+Regional Support: Expand support to more specific regions (e.g., states or cities) if the API provides such data.
+Real-time Updates: Implement real-time data updates to provide continuous monitoring.
